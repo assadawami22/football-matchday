@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(245, 241, 230, 0.025) 0px,
+      rgba(245, 241, 230, 0.025) 1px,
+      transparent 1px,
+      transparent 64px
+    ),
+    radial-gradient(circle at 15% 0%, #16412F 0%, #0B241A 55%);
+}
+
+/* Jersey-number badge used across main/bench/admin lists */
+.badge-number {
+  @apply flex items-center justify-center rounded-full font-display text-lg leading-none;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: linear-gradient(160deg, #1F5C3F, #123524);
+  border: 1px solid rgba(245, 241, 230, 0.25);
+  color: #F5F1E6;
+}
+
+.card {
+  @apply bg-pitch/60 border border-chalk/10 rounded-2xl backdrop-blur-sm;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 font-semibold text-sm transition;
+}
+
+.btn-primary {
+  @apply btn bg-amber text-ink hover:brightness-110 active:brightness-95;
+}
+
+.btn-ghost {
+  @apply btn bg-transparent border border-chalk/25 text-chalk hover:bg-chalk/10;
+}
+
+.btn-danger {
+  @apply btn bg-rust text-chalk hover:brightness-110;
+}
+
+.input {
+  @apply w-full rounded-xl bg-ink/60 border border-chalk/20 px-4 py-3 text-chalk placeholder:text-chalk/40 outline-none focus:border-amber focus:ring-1 focus:ring-amber;
+}
+
+.label {
+  @apply text-xs text-chalk/50 font-semibold;
+}
+
+.eyebrow {
+  @apply text-xs text-amber font-semibold;
+}
