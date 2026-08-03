@@ -198,7 +198,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="label">رقم الجوال</label>
+            <label className="label">رقم الجوال (اختياري)</label>
             <input
               type="tel"
               inputMode="numeric"
@@ -207,7 +207,7 @@ export default function RegisterPage() {
               placeholder="05X XXX XXXX"
               value={phone}
               onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
-              required
+              // required
             />
             {phone.length > 0 && !isValidSaudiPhone(phone) && (
               <p className="text-xs text-rust mt-1.5">
@@ -250,13 +250,13 @@ export default function RegisterPage() {
 
           <button
             type="submit"
-            disabled={!player || !isValidSaudiPhone(phone) || (mainOpen && !paid) || submitting}
+            disabled={!player ||  (mainOpen && !paid) || submitting}
             className="btn-primary w-full disabled:opacity-40"
           >
             {submitting ? 'جارٍ الإرسال...' : 'تسجيل'}
           </button>
 
-          {mainOpen && !paid && player && isValidSaudiPhone(phone) && (
+          {mainOpen && !paid && player &&  (
             <p className="text-xs text-rust -mt-3 text-center">
               أكّد الدفع بالضغط على مربع "لقد دفعت..." أعلاه لتفعيل زر التسجيل.
             </p>
