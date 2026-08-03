@@ -14,7 +14,7 @@ const body = Cairo({
 });
 
 export const metadata = {
-  title: 'يوم المباراة',
+  title: 'تمرين أنصاريان',
   description: 'التسجيل الأسبوعي للمباراة، الدفع، وقائمة اللاعبين.',
 };
 
