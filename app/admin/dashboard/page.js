@@ -433,17 +433,17 @@ export default function AdminDashboard() {
 
       {/* Bench / promotion */}
       <section>
-        <h2 className="label mb-3">الاحتياط والترقية</h2>
+        <h2 className=" mb-3 font-semibold text-orange-400">الاحتياط والترقية</h2>
         {openMatches.length === 0 && <p className="text-chalk/50 text-sm">لا توجد مباراة مفتوحة.</p>}
         {openMatches.map((m) => (
           <div key={m.id} className="mb-6">
-            <p className="text-sm text-chalk/60 mb-2">{m.day_type} · {m.match_date}</p>
+            <p className="text-sm text-chalk/60 mb-2 ">{m.day_type} · {m.match_date}</p>
             <ul className="space-y-2">
               {(benchByMatch[m.id] || []).map((b, i) => (
                 <li key={b.id} className="card p-3 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="badge-number bg-amber/20 text-sm">إ{i + 1}</span>
-                    <span>{b.players?.name}</span>
+                    <span className="font-semibold text-orange-400">{b.players?.name}</span>
                   </div>
                   <button className="btn-primary text-xs" onClick={() => promote(b.id)}>
                     ترقية للقائمة الأساسية

@@ -125,7 +125,7 @@ export default function RegisterPage() {
         </p>
         <div className="flex gap-3 mt-4">
           <Link href="/list" className="btn-ghost text-sm">عرض قائمة اللاعبين</Link>
-          <Link href="/status" className="btn-ghost text-sm">تحقق من حالتي</Link>
+          <Link href="/status" className="btn-ghost text-sm"> الانسحاب من التمرين </Link>
         </div>
       </div>
 
@@ -225,7 +225,7 @@ export default function RegisterPage() {
                 className="mt-1 w-4 h-4 accent-amber"
               />
               <span className="text-sm text-chalk/80">
-                لقد دفعت <strong>{currentMatch.match_fee} ريال</strong> عبر STC Pay لهذه المباراة.
+                لقد دفعت <strong>{currentMatch.match_fee} ريال</strong> عبر STC Pay, Barq, Cash لهذه المباراة.
                 يوجد مكان في القائمة الأساسية — هذا مطلوب لإضافتك إليها.
               </span>
             </label>

@@ -71,8 +71,8 @@ export default function StatusPage() {
     <main className="max-w-xl mx-auto px-5 py-10 md:py-16">
       <div className="mb-8">
         <p className="eyebrow">يوم المباراة</p>
-        <h1 className="font-display text-5xl md:text-6xl mt-1">حالتي</h1>
-        <p className="text-chalk/60 mt-2">ابحث عن اسمك لمعرفة مكانك أو دفع غرامة تأخير.</p>
+        <h1 className="font-display text-3xl md:text-4xl mt-1">انسحاب وتأكيد دفع الغرامات</h1>
+        <p className="text-chalk/60 mt-2">ابحث عن اسمك  للانسحاب أوتأكيد دفع غرامة تأخير.</p>
         <Link href="/" className="btn-ghost text-sm mt-4 inline-flex">العودة للتسجيل</Link>
       </div>
 

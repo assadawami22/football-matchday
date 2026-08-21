@@ -67,7 +67,7 @@ export default function ListPage() {
               {bench.map((r, i) => (
                 <li key={r.id} className="card p-3 flex items-center gap-3 border-amber/20">
                   <span className="badge-number bg-amber/20">إ{i + 1}</span>
-                  <span className="font-semibold">{r.players?.name}</span>
+                  <span className="font-semibold text-orange-400">{r.players?.name}</span>
                 </li>
               ))}
               {bench.length === 0 && (

@@ -49,7 +49,7 @@ export default function PlayerSearch({ selected, onSelect, onRequestAdd }) {
 
   return (
     <div className="relative" ref={boxRef}>
-      <label className="label">اسمك</label>
+      <label className="label">  اسمك (الاسم الثنائي)</label>
       <input
         className="input mt-1.5"
         placeholder="اضغط لتصفح القائمة أو ابدأ الكتابة..."
@@ -92,7 +92,8 @@ export default function PlayerSearch({ selected, onSelect, onRequestAdd }) {
             <div className="px-4 py-4 text-sm text-chalk/60">
               <p className="mb-2">لم يتم العثور على "{query.trim()}".</p>
               {onRequestAdd && (
-                <button type="button" className="btn-ghost text-xs" onClick={() => onRequestAdd(query.trim())}>
+                <button type="button" className="btn-ghost text-xs" onClick={() =>{ onRequestAdd(query.trim());  setOpen(false);}
+                }>
                   اطلب إضافة هذا الاسم
                 </button>
               )}
