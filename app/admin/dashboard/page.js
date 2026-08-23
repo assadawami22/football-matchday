@@ -226,6 +226,9 @@ export default function AdminDashboard() {
     }
   }
 
+
+
+
   const openMatches = matches.filter((m) => m.status === 'open');
   const filteredPlayers = players.filter((p) =>
     p.name.toLowerCase().includes(roster_query.toLowerCase())

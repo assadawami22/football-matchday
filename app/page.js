@@ -164,7 +164,7 @@ export default function RegisterPage() {
             <p className="text-amber mt-3">تم إرسال الدفع — بانتظار موافقة المسؤول.</p>
           ) : (
             <button type="button" className="btn-primary mt-3" onClick={payLateFee}>
-              لقد دفعت الغرامة عبر STC Pay
+              لقد دفعت الغرامة عبر +
             </button>
           )}
           {lockedNote && <p className="text-chalk/60 mt-2">{lockedNote}</p>}
