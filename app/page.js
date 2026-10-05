@@ -146,7 +146,7 @@ export default function RegisterPage() {
 
       {lockedPlayers.length > 0 && (
         <div className="card p-4 border-rust/40 mb-8">
-          <h2 className="text-xs text-rust font-semibold mb-2">
+          <h2 className="text-md text-red-800 font-semibold mb-2">
             عليه غرامة تأخير — محظور من التسجيل
           </h2>
           <p className="text-xs text-chalk/50 mb-2">اضغط على اسمك للدفع وإلغاء الحظر.</p>
@@ -159,7 +159,7 @@ export default function RegisterPage() {
                   className="w-full flex items-center justify-between text-sm hover:text-amber transition text-start"
                 >
                   <span>{p.name}</span>
-                  <span className="text-rust font-semibold">{p.balance} ريال</span>
+                  <span className="text-red-800 font-semibold">{p.balance} ريال</span>
                 </button>
               </li>
             ))}
@@ -176,7 +176,7 @@ export default function RegisterPage() {
             لا يمكنك التسجيل لمباريات جديدة حتى يتم دفع الغرامة والموافقة عليها.
           </p>
           {lockedDetail?.pendingLateFeeClaim ? (
-            <p className="text-amber mt-3">تم إرسال الدفع — بانتظار موافقة المسؤول.</p>
+            <p className="text-amber mt-3"> تم إرسال الدفع — بانتظار موافقة  المسؤول. حدث الصفحة ل التسجيل من جديد</p>
           ) : (
             <button type="button" className="btn-primary mt-3" onClick={payLateFee}>
               لقد دفعت الغرامة عبر +

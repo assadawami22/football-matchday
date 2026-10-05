@@ -216,7 +216,7 @@ export default function ListPage() {
         </h1>
         {match && <p className="text-chalk/60 mt-1">{match.match_date}</p>}
         <div className="flex gap-3 mt-4 flex-wrap">
-          <Link href="/" className="btn-ghost text-sm">التسجيل / تعديل مكاني</Link>
+          <Link href="/" className="btn-ghost text-sm">الصفحة الرئيسية </Link>
           {match && (
             <button className="btn-primary text-sm" onClick={generateImage} disabled={generating}>
               {generating ? 'جارٍ إنشاء الصورة...' : 'تحميل صورة القائمة'}
