@@ -146,7 +146,7 @@ export default function RegisterPage() {
 
       {lockedPlayers.length > 0 && (
         <div className="card p-4 border-rust/40 mb-8">
-          <h2 className="text-md text-red-800 font-semibold mb-2">
+          <h2 className="text-md text-red-٦00 font-semibold mb-2">
             عليه غرامة تأخير — محظور من التسجيل
           </h2>
           <p className="text-xs text-chalk/50 mb-2">اضغط على اسمك للدفع وإلغاء الحظر.</p>
