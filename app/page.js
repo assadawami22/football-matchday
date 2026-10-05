@@ -1,5 +1,5 @@
 'use client';
-
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import PlayerSearch from '@/components/PlayerSearch';
@@ -117,17 +117,32 @@ export default function RegisterPage() {
 
   return (
     <main className="max-w-xl mx-auto px-5 py-10 md:py-16">
-      <div className="mb-10">
-        <p className="eyebrow">يوم المباراة</p>
-        <h1 className="font-display text-5xl md:text-6xl mt-1">سجّل للعب</h1>
-        <p className="text-chalk/60 mt-2">
-          اختر المباراة، أدخل جوالك وأكّد دفع حصتك، ثم ابحث عن اسمك وستكون على القائمة.
-        </p>
-        <div className="flex gap-3 mt-4">
-          <Link href="/list" className="btn-ghost text-sm">عرض قائمة اللاعبين</Link>
-          <Link href="/status" className="btn-ghost text-sm"> الانسحاب من التمرين </Link>
-        </div>
-      </div>
+
+
+<div className="mb-10">
+  {/* <p className="eyebrow">يوم المباراة</p> */}
+
+  <div className="flex items-center gap-4 mt-3">
+    <Image
+      src="/logo.png"
+      alt="شعار الفريق"
+      width={96}
+      height={96}
+      priority
+      className="w-16 h-16 md:w-24 md:h-24 rounded-full object-cover border border-chalk/20 shrink-0"
+    />
+    <h1 className="font-display text-4xl sm:text-5xl md:text-6xl"> تمرين انصاريان
+  </h1>
+  </div>
+
+  <p className="text-chalk/60 mt-3">
+    اختر المباراة , اختار  اسمك من القائمة ،اكد الدفع عبر <span className=" text-lg text-yellow-500" > STCPay, Barq, Cash </span> ، اضغط تسجيل .
+  </p>
+  <div className="flex gap-3 mt-4">
+    <Link href="/list" className="btn-ghost text-sm">عرض قائمة اللاعبين</Link>
+    <Link href="/status" className="btn-ghost text-sm"> الانسحاب من التمرين </Link>
+  </div>
+</div>
 
       {lockedPlayers.length > 0 && (
         <div className="card p-4 border-rust/40 mb-8">
@@ -197,7 +212,7 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <label className="label">رقم الجوال (اختياري)</label>
             <input
               type="tel"
@@ -214,22 +229,9 @@ export default function RegisterPage() {
                 أدخل رقم جوال سعودي صحيح، مثال: 05X XXX XXXX
               </p>
             )}
-          </div>
+          </div> */}
 
-          {currentMatch && mainOpen && (
-            <label className="flex items-start gap-3 card p-4 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={paid}
-                onChange={(e) => setPaid(e.target.checked)}
-                className="mt-1 w-4 h-4 accent-amber"
-              />
-              <span className="text-sm text-chalk/80">
-                لقد دفعت <strong>{currentMatch.match_fee} ريال</strong> عبر STC Pay, Barq, Cash لهذه المباراة.
-                يوجد مكان في القائمة الأساسية — هذا مطلوب لإضافتك إليها.
-              </span>
-            </label>
-          )}
+       
 
           {currentMatch && !mainOpen && (
             <div className="card p-4 text-sm text-chalk/70">
@@ -246,6 +248,21 @@ export default function RegisterPage() {
 
           {addRequestName && (
             <p className="text-sm text-amber -mt-3">{addRequestMessage}</p>
+          )}
+
+{currentMatch && mainOpen && (
+            <label className="flex items-start gap-3 card p-4 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={paid}
+                onChange={(e) => setPaid(e.target.checked)}
+                className="mt-1 w-4 h-4 accent-amber"
+              />
+              <span className="text-sm text-chalk/80">
+                لقد دفعت <strong>{currentMatch.match_fee} ريال</strong> عبر <span className="  text-yellow-500" > STCPay, Barq, Cash </span> لهذه المباراة.
+                يوجد مكان في القائمة الأساسية — هذا مطلوب لإضافتك إليها.
+              </span>
+            </label>
           )}
 
           <button
