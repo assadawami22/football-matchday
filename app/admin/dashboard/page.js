@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { formatPhoneInput, toDigits } from '@/lib/phone';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { formatPhoneInput, toDigits } from "@/lib/phone";
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
 function waLink(phone, message) {
-  const digits = (phone || '').replace(/[^0-9]/g, '');
+  const digits = (phone || "").replace(/[^0-9]/g, "");
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
@@ -20,11 +20,11 @@ export default function AdminDashboard() {
   const [claims, setClaims] = useState([]);
   const [players, setPlayers] = useState([]);
   const [benchByMatch, setBenchByMatch] = useState({});
-  const [newPlayerName, setNewPlayerName] = useState('');
-  const [newPlayerPhone, setNewPlayerPhone] = useState('');
-  const [roster_query, setRosterQuery] = useState('');
+  const [newPlayerName, setNewPlayerName] = useState("");
+  const [newPlayerPhone, setNewPlayerPhone] = useState("");
+  const [roster_query, setRosterQuery] = useState("");
   const [newMatchDate, setNewMatchDate] = useState(todayISO());
-  const [newMatchLabel, setNewMatchLabel] = useState('الأحد');
+  const [newMatchLabel, setNewMatchLabel] = useState("الأحد");
   const [matchError, setMatchError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [selectedMatchId, setSelectedMatchId] = useState(null);
@@ -42,33 +42,37 @@ export default function AdminDashboard() {
     function onFocus() {
       loadAll();
     }
-    window.addEventListener('focus', onFocus);
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') loadAll();
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") loadAll();
     });
 
     return () => {
       clearInterval(interval);
-      window.removeEventListener('focus', onFocus);
+      window.removeEventListener("focus", onFocus);
     };
   }, []);
 
   async function loadAll() {
     const [m, p, c, pl] = await Promise.all([
-      fetch('/api/admin/matches', { cache: 'no-store' }).then((r) => r.json()),
-      fetch('/api/admin/pending', { cache: 'no-store' }).then((r) => r.json()),
-      fetch('/api/admin/late-fee-payments', { cache: 'no-store' }).then((r) => r.json()),
-      fetch('/api/admin/players', { cache: 'no-store' }).then((r) => r.json()),
+      fetch("/api/admin/matches", { cache: "no-store" }).then((r) => r.json()),
+      fetch("/api/admin/pending", { cache: "no-store" }).then((r) => r.json()),
+      fetch("/api/admin/late-fee-payments", { cache: "no-store" }).then((r) =>
+        r.json()
+      ),
+      fetch("/api/admin/players", { cache: "no-store" }).then((r) => r.json()),
     ]);
     setMatches(m.matches || []);
     setPending(p.pending || []);
     setClaims(c.claims || []);
     setPlayers(pl.players || []);
 
-    const openMatches = (m.matches || []).filter((x) => x.status === 'open');
+    const openMatches = (m.matches || []).filter((x) => x.status === "open");
     const benchData = {};
     for (const match of openMatches) {
-      const res = await fetch(`/api/admin/bench?match_id=${match.id}`, { cache: 'no-store' }).then((r) => r.json());
+      const res = await fetch(`/api/admin/bench?match_id=${match.id}`, {
+        cache: "no-store",
+      }).then((r) => r.json());
       benchData[match.id] = res.bench || [];
     }
     setBenchByMatch(benchData);
@@ -76,13 +80,15 @@ export default function AdminDashboard() {
   }
 
   async function logout() {
-    await fetch('/api/admin/logout', { method: 'POST' });
-    router.push('/admin');
+    await fetch("/api/admin/logout", { method: "POST" });
+    router.push("/admin");
   }
 
   async function loadMatchPlayers(matchId) {
     setMatchPlayersLoading(true);
-    const res = await fetch(`/api/admin/match-players?match_id=${matchId}`, { cache: 'no-store' }).then((r) => r.json());
+    const res = await fetch(`/api/admin/match-players?match_id=${matchId}`, {
+      cache: "no-store",
+    }).then((r) => r.json());
     setMatchPlayers({ main: res.main || [], bench: res.bench || [] });
     setMatchPlayersLoading(false);
   }
@@ -104,42 +110,46 @@ export default function AdminDashboard() {
     e.preventDefault();
     if (!newMatchDate || !newMatchLabel.trim()) return;
     setMatchError(null);
-    const res = await fetch('/api/admin/matches', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ match_date: newMatchDate, day_type: newMatchLabel.trim() }),
+    const res = await fetch("/api/admin/matches", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        match_date: newMatchDate,
+        day_type: newMatchLabel.trim(),
+      }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      setMatchError(data.error || 'فشل إنشاء المباراة.');
+      setMatchError(data.error || "فشل إنشاء المباراة.");
       return;
     }
     loadAll();
   }
 
   async function deleteMatch(id) {
-    if (!confirm('حذف هذه المباراة نهائياً؟ سيتم أيضاً حذف كل تسجيلاتها.')) return;
-    await fetch('/api/admin/matches/delete', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    if (!confirm("حذف هذه المباراة نهائياً؟ سيتم أيضاً حذف كل تسجيلاتها."))
+      return;
+    await fetch("/api/admin/matches/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ match_id: id }),
     });
     loadAll();
   }
 
   async function closeMatch(id) {
-    await fetch('/api/admin/matches/close', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("/api/admin/matches/close", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ match_id: id }),
     });
     loadAll();
   }
 
   async function approve(registration_id) {
-    await fetch('/api/admin/approve', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("/api/admin/approve", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ registration_id }),
     });
     loadAll();
@@ -147,9 +157,9 @@ export default function AdminDashboard() {
   }
 
   async function reject(registration_id) {
-    await fetch('/api/admin/reject', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("/api/admin/reject", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ registration_id }),
     });
     loadAll();
@@ -157,9 +167,9 @@ export default function AdminDashboard() {
   }
 
   async function approveClaim(claim_id) {
-    await fetch('/api/admin/late-fee-payments/approve', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("/api/admin/late-fee-payments/approve", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ claim_id }),
     });
     loadAll();
@@ -167,9 +177,9 @@ export default function AdminDashboard() {
   }
 
   async function rejectClaim(claim_id) {
-    await fetch('/api/admin/late-fee-payments/reject', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("/api/admin/late-fee-payments/reject", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ claim_id }),
     });
     loadAll();
@@ -177,9 +187,9 @@ export default function AdminDashboard() {
   }
 
   async function markLate(player_id) {
-    await fetch('/api/admin/mark-late', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("/api/admin/mark-late", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ player_id }),
     });
     loadAll();
@@ -187,7 +197,18 @@ export default function AdminDashboard() {
   }
 
   async function unlockPlayer(player_id) {
-    await fetch('/api/admin/unlock', {
+    await fetch("/api/admin/unlock", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ player_id }),
+    });
+    loadAll();
+    refreshMatchPanel();
+  }
+
+  async function deletePlayer(player_id, name) {
+    if (!confirm(`حذف "${name}" نهائياً؟ سيتم حذف كل تسجيلاته وغراماته أيضاً.`)) return;
+    await fetch('/api/admin/players/delete', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ player_id }),
@@ -199,37 +220,41 @@ export default function AdminDashboard() {
   async function addPlayer(e) {
     e.preventDefault();
     if (!newPlayerName.trim()) return;
-    await fetch('/api/admin/players/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: newPlayerName.trim(), phone: toDigits(newPlayerPhone) }),
+    await fetch("/api/admin/players/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: newPlayerName.trim(),
+        phone: toDigits(newPlayerPhone),
+      }),
     });
-    setNewPlayerName('');
-    setNewPlayerPhone('');
+    setNewPlayerName("");
+    setNewPlayerPhone("");
     loadAll();
   }
 
   async function promote(registration_id) {
-    const res = await fetch('/api/admin/promote', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/admin/promote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ registration_id }),
     }).then((r) => r.json());
     loadAll();
     refreshMatchPanel();
-    if (res.ok) {
-      const link = waLink(
-        res.player.phone,
-        `تمت ترقيتك! فتح مكان في القائمة الأساسية. الرجاء دفع ${res.match_fee} ريال عبر STC Pay ثم التأكيد في صفحة الحالة: ${typeof window !== 'undefined' ? window.location.origin : ''}/status`
-      );
-      window.open(link, '_blank');
-    }
+    // if (res.ok) {
+    //   const link = waLink(
+    //     res.player.phone,
+    //     `تمت ترقيتك! فتح مكان في القائمة الأساسية. الرجاء دفع ${
+    //       res.match_fee
+    //     } ريال عبر STC Pay ثم التأكيد في صفحة الحالة: ${
+    //       typeof window !== "undefined" ? window.location.origin : ""
+    //     }/status`
+    //   );
+    //   window.open(link, "_blank");
+    // }
   }
 
-
-
-
-  const openMatches = matches.filter((m) => m.status === 'open');
+  const openMatches = matches.filter((m) => m.status === "open");
   const filteredPlayers = players.filter((p) =>
     p.name.toLowerCase().includes(roster_query.toLowerCase())
   );
@@ -242,20 +267,27 @@ export default function AdminDashboard() {
           <h1 className="font-display text-5xl">المسؤول</h1>
           {lastUpdated && (
             <p className="text-xs text-chalk/40 mt-1">
-              آخر تحديث: {lastUpdated.toLocaleTimeString('ar-SA')}
+              آخر تحديث: {lastUpdated.toLocaleTimeString("ar-SA")}
             </p>
           )}
         </div>
         <div className="flex gap-2">
-          <button className="btn-ghost text-sm" onClick={loadAll}>تحديث</button>
-          <button className="btn-ghost text-sm" onClick={logout}>تسجيل الخروج</button>
+          <button className="btn-ghost text-sm" onClick={loadAll}>
+            تحديث
+          </button>
+          <button className="btn-ghost text-sm" onClick={logout}>
+            تسجيل الخروج
+          </button>
         </div>
       </div>
 
       {/* Matches */}
       <section>
         <h2 className="label mb-3">المباريات</h2>
-        <form onSubmit={openMatch} className="card p-4 flex flex-wrap items-end gap-3 mb-4">
+        <form
+          onSubmit={openMatch}
+          className="card p-4 flex flex-wrap items-end gap-3 mb-4"
+        >
           <div>
             <label className="label block mb-1.5">التاريخ</label>
             <input
@@ -277,9 +309,7 @@ export default function AdminDashboard() {
           <button className="btn-primary text-sm">فتح مباراة</button>
         </form>
 
-        {matchError && (
-          <p className="text-rust text-sm mb-4">{matchError}</p>
-        )}
+        {matchError && <p className="text-rust text-sm mb-4">{matchError}</p>}
 
         <ul className="space-y-2">
           {matches.map((m) => (
@@ -290,16 +320,29 @@ export default function AdminDashboard() {
                   className="text-start flex-1"
                   onClick={() => toggleMatchPanel(m.id)}
                 >
-                  <p className="font-semibold">{m.day_type} · {m.match_date}</p>
+                  <p className="font-semibold">
+                    {m.day_type} · {m.match_date}
+                  </p>
                   <p className="text-xs text-chalk/50">
-                    {m.status === 'open' ? 'مفتوح' : 'مغلق'} — اضغط لعرض اللاعبين
+                    {m.status === "open" ? "مفتوح" : "مغلق"} — اضغط لعرض
+                    اللاعبين
                   </p>
                 </button>
                 <div className="flex gap-2">
-                  {m.status === 'open' ? (
-                    <button className="btn-ghost text-xs" onClick={() => closeMatch(m.id)}>إغلاق</button>
+                  {m.status === "open" ? (
+                    <button
+                      className="btn-ghost text-xs"
+                      onClick={() => closeMatch(m.id)}
+                    >
+                      إغلاق
+                    </button>
                   ) : (
-                    <button className="btn-danger text-xs" onClick={() => deleteMatch(m.id)}>حذف</button>
+                    <button
+                      className="btn-danger text-xs"
+                      onClick={() => deleteMatch(m.id)}
+                    >
+                      حذف
+                    </button>
                   )}
                 </div>
               </div>
@@ -311,22 +354,50 @@ export default function AdminDashboard() {
                   ) : (
                     <>
                       <div>
-                        <p className="text-xs text-chalk/50 font-semibold mb-2">
-                          القائمة الأساسية ({matchPlayers.main.length})
-                        </p>
+                        {(() => {
+                          const paidCount = matchPlayers.main.filter(
+                            (r) => r.paid
+                          ).length;
+                          const approvedCount = matchPlayers.main.filter(
+                            (r) => r.approved
+                          ).length;
+                          return (
+                            <div className="mb-2">
+                              <p className="text-xs text-chalk/50 font-semibold">
+                                القائمة الأساسية ({matchPlayers.main.length})
+                              </p>
+                              <p className="text-xs text-amber mt-1">
+                                دفع {paidCount} من {matchPlayers.main.length} ·
+                                مؤكد {approvedCount} · المحصّل{" "}
+                                {paidCount * m.match_fee} ريال · المتبقي{" "}
+                                {(matchPlayers.main.length - paidCount) *
+                                  m.match_fee}{" "}
+                                ريال
+                              </p>
+                            </div>
+                          );
+                        })()}
                         <ul className="space-y-2">
                           {matchPlayers.main.map((r) => (
-                            <li key={r.id} className="flex items-center justify-between gap-2 text-sm">
+                            <li
+                              key={r.id}
+                              className="flex items-center justify-between gap-2 text-sm"
+                            >
                               <div>
-                                <span className="font-semibold">{r.players?.name}</span>
-                                {' '}
+                                <span className="font-semibold">
+                                  {r.players?.name}
+                                </span>{" "}
                                 {!r.approved && r.paid && (
-                                  <span className="text-amber text-xs">بانتظار الموافقة</span>
+                                  <span className="text-amber text-xs">
+                                    بانتظار الموافقة
+                                  </span>
                                 )}
                                 {!r.paid && (
-                                  <span className="text-rust text-xs">بانتظار الدفع</span>
+                                  <span className="text-rust text-xs">
+                                    بانتظار الدفع
+                                  </span>
                                 )}
-                                {r.players?.status === 'locked' && (
+                                {r.players?.status === "locked" && (
                                   <span className="text-rust text-xs font-semibold ms-1">
                                     محظور · {r.players?.balance} ريال
                                   </span>
@@ -335,20 +406,42 @@ export default function AdminDashboard() {
                               <div className="flex gap-1.5 flex-wrap justify-end">
                                 {!r.approved && r.paid && (
                                   <>
-                                    <button className="btn-primary text-xs" onClick={() => approve(r.id)}>موافقة</button>
-                                    <button className="btn-danger text-xs" onClick={() => reject(r.id)}>رفض</button>
+                                    <button
+                                      className="btn-primary text-xs"
+                                      onClick={() => approve(r.id)}
+                                    >
+                                      موافقة
+                                    </button>
+                                    <button
+                                      className="btn-danger text-xs"
+                                      onClick={() => reject(r.id)}
+                                    >
+                                      رفض
+                                    </button>
                                   </>
                                 )}
-                                {r.players?.status === 'locked' ? (
-                                  <button className="btn-primary text-xs" onClick={() => unlockPlayer(r.players.id)}>إلغاء الحظر</button>
+                                {r.players?.status === "locked" ? (
+                                  <button
+                                    className="btn-primary text-xs"
+                                    onClick={() => unlockPlayer(r.players.id)}
+                                  >
+                                    إلغاء الحظر
+                                  </button>
                                 ) : (
-                                  <button className="btn-danger text-xs" onClick={() => markLate(r.players.id)}>تسجيل تأخير</button>
+                                  <button
+                                    className="btn-danger text-xs"
+                                    onClick={() => markLate(r.players.id)}
+                                  >
+                                    تسجيل تأخير
+                                  </button>
                                 )}
                               </div>
                             </li>
                           ))}
                           {matchPlayers.main.length === 0 && (
-                            <li className="text-chalk/50 text-sm">لا يوجد لاعبين بعد.</li>
+                            <li className="text-chalk/50 text-sm">
+                              لا يوجد لاعبين بعد.
+                            </li>
                           )}
                         </ul>
                       </div>
@@ -359,27 +452,49 @@ export default function AdminDashboard() {
                         </p>
                         <ul className="space-y-2">
                           {matchPlayers.bench.map((r) => (
-                            <li key={r.id} className="flex items-center justify-between gap-2 text-sm">
+                            <li
+                              key={r.id}
+                              className="flex items-center justify-between gap-2 text-sm"
+                            >
                               <div>
-                                <span className="font-semibold">{r.players?.name}</span>
-                                {r.players?.status === 'locked' && (
+                                <span className="font-semibold">
+                                  {r.players?.name}
+                                </span>
+                                {r.players?.status === "locked" && (
                                   <span className="text-rust text-xs font-semibold ms-1">
                                     محظور · {r.players?.balance} ريال
                                   </span>
                                 )}
                               </div>
                               <div className="flex gap-1.5 flex-wrap justify-end">
-                                <button className="btn-primary text-xs" onClick={() => promote(r.id)}>ترقية</button>
-                                {r.players?.status === 'locked' ? (
-                                  <button className="btn-primary text-xs" onClick={() => unlockPlayer(r.players.id)}>إلغاء الحظر</button>
+                                <button
+                                  className="btn-primary text-xs"
+                                  onClick={() => promote(r.id)}
+                                >
+                                  ترقية
+                                </button>
+                                {r.players?.status === "locked" ? (
+                                  <button
+                                    className="btn-primary text-xs"
+                                    onClick={() => unlockPlayer(r.players.id)}
+                                  >
+                                    إلغاء الحظر
+                                  </button>
                                 ) : (
-                                  <button className="btn-danger text-xs" onClick={() => markLate(r.players.id)}>تسجيل تأخير</button>
+                                  <button
+                                    className="btn-danger text-xs"
+                                    onClick={() => markLate(r.players.id)}
+                                  >
+                                    تسجيل تأخير
+                                  </button>
                                 )}
                               </div>
                             </li>
                           ))}
                           {matchPlayers.bench.length === 0 && (
-                            <li className="text-chalk/50 text-sm">الاحتياط فارغ.</li>
+                            <li className="text-chalk/50 text-sm">
+                              الاحتياط فارغ.
+                            </li>
                           )}
                         </ul>
                       </div>
@@ -393,7 +508,7 @@ export default function AdminDashboard() {
       </section>
 
       {/* Pending payment approvals */}
-      <section>
+      {/* <section>
         <h2 className="label mb-3">بانتظار الموافقة على الدفع ({pending.length})</h2>
         {pending.length === 0 && <p className="text-chalk/50 text-sm">لا يوجد شيء بانتظار الموافقة.</p>}
         <ul className="space-y-2">
@@ -412,22 +527,39 @@ export default function AdminDashboard() {
             </li>
           ))}
         </ul>
-      </section>
+      </section> */}
 
       {/* Late fee claims */}
       <section>
         <h2 className="label mb-3">مطالبات دفع الغرامات ({claims.length})</h2>
-        {claims.length === 0 && <p className="text-chalk/50 text-sm">لا يوجد شيء بانتظار الموافقة.</p>}
+        {claims.length === 0 && (
+          <p className="text-chalk/50 text-sm">لا يوجد شيء بانتظار الموافقة.</p>
+        )}
         <ul className="space-y-2">
           {claims.map((c) => (
-            <li key={c.id} className="card p-4 flex items-center justify-between">
+            <li
+              key={c.id}
+              className="card p-4 flex items-center justify-between"
+            >
               <div>
                 <p className="font-semibold">{c.players?.name}</p>
-                <p className="text-xs text-chalk/50">{c.amount} ريال · {formatPhoneInput(c.players?.phone)}</p>
+                <p className="text-xs text-chalk/50">
+                  {c.amount} ريال · {formatPhoneInput(c.players?.phone)}
+                </p>
               </div>
               <div className="flex gap-2">
-                <button className="btn-primary text-xs" onClick={() => approveClaim(c.id)}>موافقة وإلغاء الحظر</button>
-                <button className="btn-danger text-xs" onClick={() => rejectClaim(c.id)}>رفض</button>
+                <button
+                  className="btn-primary text-xs"
+                  onClick={() => approveClaim(c.id)}
+                >
+                  موافقة وإلغاء الحظر
+                </button>
+                <button
+                  className="btn-danger text-xs"
+                  onClick={() => rejectClaim(c.id)}
+                >
+                  رفض
+                </button>
               </div>
             </li>
           ))}
@@ -435,7 +567,7 @@ export default function AdminDashboard() {
       </section>
 
       {/* Bench / promotion */}
-      <section>
+      {/* <section>
         <h2 className=" mb-3 font-semibold text-orange-400">الاحتياط والترقية</h2>
         {openMatches.length === 0 && <p className="text-chalk/50 text-sm">لا توجد مباراة مفتوحة.</p>}
         {openMatches.map((m) => (
@@ -459,7 +591,7 @@ export default function AdminDashboard() {
             </ul>
           </div>
         ))}
-      </section>
+      </section> */}
 
       {/* Roster + late marking */}
       <section>
@@ -479,7 +611,9 @@ export default function AdminDashboard() {
             dir="ltr"
             placeholder="الجوال (اختياري) 05X XXX XXXX"
             value={newPlayerPhone}
-            onChange={(e) => setNewPlayerPhone(formatPhoneInput(e.target.value))}
+            onChange={(e) =>
+              setNewPlayerPhone(formatPhoneInput(e.target.value))
+            }
           />
           <button className="btn-primary whitespace-nowrap">إضافة</button>
         </form>
@@ -492,27 +626,39 @@ export default function AdminDashboard() {
         />
         <ul className="space-y-2 max-h-96 overflow-y-auto">
           {filteredPlayers.map((p) => (
-            <li key={p.id} className="card p-3 flex items-center justify-between">
+            <li
+              key={p.id}
+              className="card p-3 flex items-center justify-between"
+            >
               <div>
                 <p className="font-semibold">
-                  {p.name}{' '}
-                  {p.status === 'locked' && (
+                  {p.name}{" "}
+                  {p.status === "locked" && (
                     <span className="text-rust text-xs font-semibold ms-1">
                       محظور · {p.balance} ريال
                     </span>
                   )}
                 </p>
-                <p className="text-xs text-chalk/40">{formatPhoneInput(p.phone)}</p>
+                <p className="text-xs text-chalk/40">
+                  {formatPhoneInput(p.phone)}
+                </p>
               </div>
-              {p.status === 'locked' ? (
-                <button className="btn-primary text-xs" onClick={() => unlockPlayer(p.id)}>
-                  إلغاء الحظر
-                </button>
-              ) : (
-                <button className="btn-danger text-xs" onClick={() => markLate(p.id)}>
-                  تسجيل تأخير
-                </button>
-              )}
+
+              
+              <div className="flex gap-2">
+  {p.status === 'locked' ? (
+    <button className="btn-primary text-xs" onClick={() => unlockPlayer(p.id)}>
+      إلغاء الحظر
+    </button>
+  ) : (
+    <button className="btn-danger text-xs" onClick={() => markLate(p.id)}>
+      تسجيل تأخير
+    </button>
+  )}
+  <button className="btn-ghost text-xs" onClick={() => deletePlayer(p.id, p.name)}>
+    حذف
+  </button>
+</div>
             </li>
           ))}
         </ul>

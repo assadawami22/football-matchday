@@ -6,6 +6,9 @@ import Link from 'next/link';
 export default function ListPage() {
   const [data, setData] = useState(null);
   const [generating, setGenerating] = useState(false);
+  // const [paid, setPaid] = useState(false);
+  const [busyId, setBusyId] = useState(null);
+
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -207,6 +210,18 @@ export default function ListPage() {
   const { match, main, bench, locked } = data;
   const sortedLocked = [...locked].sort((a, b) => b.balance - a.balance);
 
+  async function confirmPaid(id) {
+    setBusyId(id);
+    const res = await fetch('/api/status/mark-paid', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ registration_id: id }),
+    });
+    setBusyId(null);
+    if (!res.ok) alert('تعذّر تأكيد الدفع، حاول مرة أخرى.');
+    await load(); // reload the list, and the button disappears because paid is now true
+  }
+
   return (
     <main className="max-w-xl mx-auto px-5 py-10 md:py-16">
       <div className="mb-8">
@@ -238,11 +253,24 @@ export default function ListPage() {
                     <span className="badge-number">{i + 1}</span>
                     <span className="font-semibold">{r.players?.name}</span>
                   </div>
+
+
+
+                  <div>
+                  {!r.paid && (
+                    <button disabled={busyId === r.id} onClick={() => confirmPaid(r.id)}  className="text-xs text-green-600 font-semibold whitespace-nowrap px-4">
+                       تم الدفع
+                    </button>
+                  )}
+
                   {!r.approved && (
                     <span className="text-xs text-amber font-semibold whitespace-nowrap">
-                      بانتظار الدفع
+                      بانتظار تاكيد المسؤول 
                     </span>
                   )}
+
+                  </div>
+             
                 </li>
               ))}
               {main.length === 0 && (

@@ -81,7 +81,7 @@ export default function RegisterPage() {
     const res = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ player_id: player.id, match_id: matchId, phone: toDigits(phone), paid }),
+      body: JSON.stringify({ player_id: player.id, match_id: matchId, phone: toDigits(phone) })
     });
     const data = await res.json();
     setSubmitting(false);
@@ -95,17 +95,13 @@ export default function RegisterPage() {
   }
 
   async function requestAdd(name) {
-    if (mainOpen && !paid) {
-      setAddRequestName(name);
-      setAddRequestMessage('أكّد أنك دفعت عبر مربع "لقد دفعت..." أعلاه أولاً، ثم اضغط لإضافة الاسم مرة أخرى.');
-      return;
-    }
+   
     setAddRequestName(name);
     setAddRequestMessage('جارٍ الإرسال...');
     const res = await fetch('/api/players/request-add', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, phone: toDigits(phone), match_id: matchId, paid }),
+      body: JSON.stringify({ name, phone: toDigits(phone), match_id: matchId }),
     });
     const data = await res.json();
     setAddRequestMessage(data.message || data.error);
@@ -250,7 +246,7 @@ export default function RegisterPage() {
             <p className="text-sm text-amber -mt-3">{addRequestMessage}</p>
           )}
 
-{currentMatch && mainOpen && (
+{/* {currentMatch && mainOpen && (
             <label className="flex items-start gap-3 card p-4 cursor-pointer">
               <input
                 type="checkbox"
@@ -263,21 +259,21 @@ export default function RegisterPage() {
                 يوجد مكان في القائمة الأساسية — هذا مطلوب لإضافتك إليها.
               </span>
             </label>
-          )}
+          )} */}
 
           <button
             type="submit"
-            disabled={!player ||  (mainOpen && !paid) || submitting}
+            disabled={!player || submitting}
             className="btn-primary w-full disabled:opacity-40"
           >
             {submitting ? 'جارٍ الإرسال...' : 'تسجيل'}
           </button>
 
-          {mainOpen && !paid && player &&  (
+          {/* {mainOpen  && player &&  (
             <p className="text-xs text-rust -mt-3 text-center">
               أكّد الدفع بالضغط على مربع "لقد دفعت..." أعلاه لتفعيل زر التسجيل.
             </p>
-          )}
+          )} */}
 
           {result && (
             <div className={`card p-4 text-sm ${result.ok ? 'border-amber/50' : 'border-rust/50'}`}>

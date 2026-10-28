@@ -13,7 +13,7 @@ export async function GET() {
     .from('registrations')
     .select('id, type, paid, approved, created_at, players(id, name, phone), matches(match_date, day_type)')
     .eq('type', 'main')
-    .eq('paid', true)
+    .eq('paid', false)
     .eq('approved', false)
     .eq('rejected', false)
     .order('created_at', { ascending: true });

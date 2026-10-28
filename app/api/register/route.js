@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
-  const { player_id, match_id, phone, paid } = body;
+  const { player_id, match_id, phone } = body;
 
   if (!player_id || !match_id) {
     return NextResponse.json({ error: 'بيانات المباراة أو اللاعب ناقصة.' }, { status: 400 });
@@ -24,6 +24,6 @@ export async function POST(request) {
     return NextResponse.json({ error: 'اللاعب غير موجود.' }, { status: 404 });
   }
 
-  const result = await attemptRegistration(supabase, { player, match_id, phone, paid });
+  const result = await attemptRegistration(supabase, { player, match_id, phone });
   return NextResponse.json(result.body, { status: result.status });
 }

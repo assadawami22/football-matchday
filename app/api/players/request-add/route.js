@@ -9,7 +9,6 @@ export async function POST(request) {
   const name = (body.name || '').trim();
   const phone = (body.phone || '').trim();
   const match_id = body.match_id || null;
-  const paid = !!body.paid;
 
   if (!name) {
     return NextResponse.json({ error: 'الاسم مطلوب.' }, { status: 400 });
@@ -47,7 +46,7 @@ export async function POST(request) {
     });
   }
 
-  const result = await attemptRegistration(supabase, { player, match_id, phone, paid });
+  const result = await attemptRegistration(supabase, { player, match_id, phone });
 
   if (result.status === 200) {
     return NextResponse.json({
