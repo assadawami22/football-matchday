@@ -280,6 +280,7 @@ export default function ListPage() {
             <h2 className="label mb-3">
               القائمة الأساسية · {main.length}/{match.main_capacity}
             </h2>
+            <p className="label mb-3">بعد الدفع او التحويل عن طريق  <span className=" text-base text-amber font-semibold whitespace-nowrap "> STC Pay or Barq or Cash</span> اضغط على تم الدفع </p>
             <ol className="space-y-2">
               {main.map((r, i) => (
                 <li
@@ -292,18 +293,17 @@ export default function ListPage() {
 </div>
 
                   <div>
-                    {!r.paid && (
-                      <button
-                        onClick={() => confirmPaid(r.id)}
-                        disabled={busyId === r.id}
-                        className="text-xs text-green-600 font-semibold whitespace-nowrap px-4 shrink-0 disabled:opacity-50"
-                      >
-                        {busyId === r.id ? "جارٍ التأكيد..." : "تم الدفع"}
-                      </button>
-                    )}
+                  {!r.paid && (
+  <button
+    onClick={() => confirmPaid(r.id)}
+    disabled={busyId === r.id}
+    className="btn bg-green-700 !px-3 !py-1 !text-xs whitespace-nowrap shrink-0 disabled:opacity-50 "     >
+    {busyId === r.id ? "جارٍ التأكيد..." : "تم الدفع"}
+  </button>
+)}
 
                     {!r.approved && (
-                      <span className="text-xs text-amber font-semibold whitespace-nowrap">
+                      <span className="text-xs text-amber font-semibold whitespace-nowrap pr-3">
                         بانتظار تاكيد المسؤول
                       </span>
                     )}
